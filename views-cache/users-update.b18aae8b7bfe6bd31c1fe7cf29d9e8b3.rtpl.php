@@ -14,13 +14,13 @@
   	<div class="col-md-12">
   		<div class="box box-primary">
         <div class="box-header with-border">
-          <h3 class="box-title">Editar Usuário</h3>
+          <h3 class="box-title" >Editar Usuário </h3>
         </div>
         <!-- /.box-header -->
         <!-- form start -->
 
 
-        <form role="form" action="/admin/users/<?php echo htmlspecialchars( $user["desperson"], ENT_COMPAT, 'UTF-8', FALSE ); ?>" method="post">
+        <form role="form" action="/admin/users/<?php echo htmlspecialchars( $user["iduser"], ENT_COMPAT, 'UTF-8', FALSE ); ?>" method="post">
           <div class="box-body">
             <div class="form-group">
               <label for="desperson">Nome</label>

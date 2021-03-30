@@ -12,7 +12,7 @@ class Model {
 		$method = substr($name, 0,3);
 		$fieldName = substr($name,3,strlen($name));
 
-		switch ($method) {
+			switch ($method) {
 			case 'get':
 				# code...
 			return $this->values[$fieldName];
@@ -21,7 +21,8 @@ class Model {
 			case 'set':
 				# code...
 			$this->values[$fieldName]=$args[0];
-				break;			
+				break;
+			
 
 		}
 
