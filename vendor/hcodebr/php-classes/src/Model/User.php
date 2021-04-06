@@ -3,10 +3,13 @@
 namespace Hcode\Model;
 use \Hcode\DB\Sql;
 use \Hcode\Model;
+use \Hcode\Mailer;
+
 
 class User extends Model {
 
 	const SESSION = "User";
+	const SECRET = "HcodePhp7_Secret";
 
 	public static function login($login,$password){
 
@@ -85,7 +88,7 @@ public function save()
 
 	$sql= new Sql();
 
-	$results = $sql -> select("CALL sp_users_save(:desperson, :deslogin, :despassword, :desemail, :nrphone, :inadmin", 
+	$results = $sql -> select("CALL sp_users_save(:desperson, :deslogin, :despassword, :desemail, :nrphone, :inadmin)", 
 		array(
 		":desperson"=>$this->getdesperson(),
 		":deslogin"=>$this->getdeslogin(),
@@ -95,6 +98,7 @@ public function save()
 		":inadmin"=>$this->getinadmin()
 
 	));
+
 
 	$this->setData($results[0]);
 }
@@ -117,7 +121,7 @@ public function save()
 	{
 		$sql= new Sql();
 
-		$results = $sql -> select("CALL sp_usersupdate_save(:iduser,:desperson, :deslogin, :despassword, :desemail, :nrphone, :inadmin", 
+		$results = $sql -> select("CALL sp_usersupdate_save(:iduser,:desperson, :deslogin, :despassword, :desemail, :nrphone, :inadmin)", 
 		array(
 		":iduser"=>$this->getiduser(),
 		":desperson"=>$this->getdesperson(),
@@ -138,10 +142,61 @@ public function save()
 
 		$sql= new Sql();
 
-		$results = $sql -> query("CALL sp_user_delete(:iduser)", 
+		$results = $sql -> query("CALL sp_users_delete(:iduser)", 
 		array(
 			":iduser"=>$this->getiduser()
 		));
+	}
+
+	public static function getForgot($email, $inadmin=true)
+	{
+		$sql= new Sql();
+		$results = $sql-> select("SELECT * FROM tb_persons a INNER JOIN tb_users b USING(idperson) WHERE a.desemail=:email;", array(
+			":email"=>$email
+		));
+
+		if (count($results)===0)
+		{
+			throw new \Exception("Não foi possível recuperar a senha.", 1);
+			
+		}
+		else
+		{
+
+			$data=$results[0];
+
+			$results2 = $sql->select("CALL sp_userspasswordsrecoveries_create(:iduser,:desip)", array(
+				":iduser"=>$data["iduser"],
+				":desip"=>$_SERVER["REMOTE_ADDR"]
+			));
+
+			if (count($results2)===0){
+				throw new \Exception("Não foi possível recuperar a senha.", 1);
+				
+			}
+			else
+			{
+				$dataRecovery=$results2[0];
+
+				$iv = random_bytes(openssl_cipher_iv_length('aes-256-cbc'));
+             	$code = openssl_encrypt($dataRecovery['idrecovery'], 'aes-256-cbc', User::SECRET, 0, $iv);
+
+				$result = base64_encode($iv.$code);
+	            if ($inadmin === true) {
+	                 $link = "http://www.hcodecommerce.com.br/admin/forgot/reset?code=$result";
+	             } else {
+	                 $link = "http://www.hcodecommerce.com.br/forgot/reset?code=$result";
+	             } 
+	             $mailer = new Mailer($data['desemail'], $data['desperson'], "Redefinir senha da Hcode Store", "forgot", array(
+	                 "name"=>$data['desperson'],
+	                 "link"=>$link
+	             )); 
+	             $mailer->send();
+	             return $link;
+
+			}
+
+		}
 	}
 
 }

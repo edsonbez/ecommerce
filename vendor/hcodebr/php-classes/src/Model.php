@@ -40,7 +40,8 @@ class Model {
 
 	public function getValues(){
 
-		return $this->values[$fieldName];
+		//return $this->values[$fieldName];
+		return $this->values;
 
 	}
 

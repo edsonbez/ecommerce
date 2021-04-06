@@ -14,12 +14,10 @@
   	<div class="col-md-12">
   		<div class="box box-primary">
         <div class="box-header with-border">
-          <h3 class="box-title" >Editar Usuário </h3>
+          <h3 class="box-title">Editar Usuário</h3>
         </div>
         <!-- /.box-header -->
         <!-- form start -->
-
-
         <form role="form" action="/admin/users/<?php echo htmlspecialchars( $user["iduser"], ENT_COMPAT, 'UTF-8', FALSE ); ?>" method="post">
           <div class="box-body">
             <div class="form-group">
@@ -40,7 +38,7 @@
             </div>
             <div class="checkbox">
               <label>
-                <input type="checkbox" name="inadmin" value="1" <?php if( $user["inadmin"] == 1 ){ ?>checked<?php } ?>> Acesso de Administrador
+                <input type="checkbox" name="inadmin" value = "1" <?php if( $user["inadmin"] == 1 ){ ?>checked<?php } ?>> Acesso de Administrador
               </label>
             </div>
           </div>
