@@ -6,8 +6,10 @@ use Rain\Tpl;
 
 class Mailer {
 
-	const USERNAME = "edsonhcode@gmail.com";
-	const PASSWORD = "<?password?>"; //
+	//const USERNAME = "edsonhcode@gmail.com"; 
+	//const PASSWORD = "cartilhateste123";
+	const USERNAME = "noreply@intralesc.sc.gov.br";
+	const PASSWORD = ""; //
 	const NAME_FROM = "Hcode Store";
 
 	private $mail;
@@ -27,14 +29,14 @@ class Mailer {
 		$tpl = new Tpl;
 
 		foreach ($data as $key => $value) {
-			# code...
+			
 			$tpl->assign($key,$value);
 		}
 
 		$html = $tpl->draw($tplName,true);
 
 
-		$this->mail = new \PHPMailer();
+		$this->mail = new \PHPMailer;
 
 
 		//Tell PHPMailer to use SMTP
@@ -44,19 +46,23 @@ class Mailer {
 		// SMTP::DEBUG_OFF = off (for production use)
 		// SMTP::DEBUG_CLIENT = client messages
 		// SMTP::DEBUG_SERVER = client and server messages
+		
+		//$this->mail->SMTPDebug = true;
 		$this->mail->SMTPDebug = 0;
-
+		
 		$this->mail->Debugoutput = "html";
 
 		//Set the hostname of the mail server
-		$this->mail->Host = 'smtp.gmail.com';
+		
+		//$this->mail->Host = 'smtp.gmail.com';
+		$this->mail->Host = 'smtp.intralesc.sc.gov.br';
 		// use
 		// $this->mail->Host = gethostbyname('smtp.gmail.com');
 		// if your network does not support SMTP over IPv6
 
 		//Set the SMTP port number - 587 for authenticated TLS, a.k.a. RFC4409 SMTP submission
-		$this->mail->Port = 587;
-
+		//$this->mail->Port = 587;
+		$this->mail->Port = 25;
 
 		$this->mail->SMTPOptions = array(
             'ssl' => array(
@@ -70,7 +76,9 @@ class Mailer {
 		$this->mail->SMTPSecure = 'tls';
 
 		//Whether to use SMTP authentication
-		$this->mail->SMTPAuth = true;
+		
+		//$this->mail->SMTPAuth = true;
+		$this->mail->SMTPAuth = false;
 
 		//Username to use for SMTP authentication - use full email address for gmail
 		$this->mail->Username =MAILER::USERNAME;
