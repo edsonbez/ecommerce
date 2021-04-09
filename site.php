@@ -2,6 +2,7 @@
 
 use \Hcode\Page;
 use \Hcode\Model\Product;
+use \Hcode\Model\Category;
 
 $app->get('/', function() {
     
@@ -15,10 +16,23 @@ $app->get('/', function() {
     "products"=>Product::checkList($products)
     ]); //carega o conteudo e o destruct é automatico e então carrega o footer
 
+});
 
+$app-> get("/categories/:categories", function($idcategory){
+
+	
+	$category=new Category();
+
+	$category-> get((int)$idcategory);
+
+	$page=new Page(); 
+
+    $page->setTpl("category", [
+    	'category'=>$category->getvalues(),
+    	'products'=>Product::checkList($category->getProducts())
+    ]);
 
 
 });
-
 
  ?>
